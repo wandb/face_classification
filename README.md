@@ -1,7 +1,9 @@
 # Face Detection and Classification
-Real-time face detection and emotion/gender classification using fer2013/IMDB datasets with a Keras CNN model and openCV.
-* IMDB gender classification test accuracy: 96%.
-* fer2013 emotion classification test accuracy: 66%.
+This model performs realtime face detection and emotion/gender classification.
+Model: Keras CNN and OpenCV
+Datasets: [IMDB-WIKI](https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/) and [FER2013 dataset](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)
+* IMDB-WIKI gender classification test accuracy: 96%.
+* FER2013 emotion classification test accuracy: 66%.
 
 For more information please consult the [publication](https://github.com/oarriaga/face_classification/blob/master/report.pdf).
 
