@@ -7,13 +7,17 @@ Description: Train emotion classification model
 """
 
 from keras.callbacks import CSVLogger, ModelCheckpoint, EarlyStopping
-from keras.callbacks import ReduceLROnPlateau
+from keras.callbacks import ReduceLROnPlateau, LambdaCallback
 from keras.preprocessing.image import ImageDataGenerator
 
 from models.cnn import mini_XCEPTION
 from utils.datasets import DataManager
 from utils.datasets import split_data
 from utils.preprocessor import preprocess_input
+
+import wandb
+from wandb.keras import WandbCallback
+wandb.init(project="face_classification")
 
 # parameters
 batch_size = 32
@@ -24,6 +28,18 @@ verbose = 1
 num_classes = 7
 patience = 50
 base_path = '../trained_models/emotion_models/'
+
+parameters = {
+    "batch": batch_size,
+    "epochs": num_epochs,
+    "input_shape": input_shape,
+    "val_split": validation_split,
+    "classes": num_classes,
+    "patience": patience,
+    "base_path": base_path
+}
+
+wandb.init(config=parameters)
 
 # data generator
 data_generator = ImageDataGenerator(
@@ -45,6 +61,14 @@ model.summary()
 datasets = ['fer2013']
 for dataset_name in datasets:
     print('Training dataset:', dataset_name)
+    
+    counter = 0
+    def on_batch_end(batch, logs=None):
+        global counter
+        counter += 1
+        if counter == 80:
+            counter = 0
+            wandb.log(logs, commit=True)
 
     # callbacks
     log_file_path = base_path + dataset_name + '_emotion_training.log'
@@ -53,10 +77,10 @@ for dataset_name in datasets:
     reduce_lr = ReduceLROnPlateau('val_loss', factor=0.1,
                                   patience=int(patience/4), verbose=1)
     trained_models_path = base_path + dataset_name + '_mini_XCEPTION'
-    model_names = trained_models_path + '.{epoch:02d}-{val_acc:.2f}.hdf5'
+    model_names = trained_models_path + '.{epoch:02d}.hdf5'
     model_checkpoint = ModelCheckpoint(model_names, 'val_loss', verbose=1,
                                                     save_best_only=True)
-    callbacks = [model_checkpoint, csv_logger, early_stop, reduce_lr]
+    callbacks = [model_checkpoint, csv_logger, early_stop, reduce_lr, WandbCallback(), LambdaCallback(on_batch_end = on_batch_end)]
 
     # loading dataset
     data_loader = DataManager(dataset_name, image_size=input_shape[:2])
@@ -70,3 +94,5 @@ for dataset_name in datasets:
                         steps_per_epoch=len(train_faces) / batch_size,
                         epochs=num_epochs, verbose=1, callbacks=callbacks,
                         validation_data=val_data)
+
+    
