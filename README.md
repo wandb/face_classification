@@ -1,18 +1,17 @@
-# Face classification and detection.
-Real-time face detection and emotion/gender classification using fer2013/IMDB datasets with a keras CNN model and openCV.
+# Face Detection and Classification
+Real-time face detection and emotion/gender classification using fer2013/IMDB datasets with a Keras CNN model and openCV.
 * IMDB gender classification test accuracy: 96%.
 * fer2013 emotion classification test accuracy: 66%.
 
-For more information please consult the [publication](https://github.com/oarriaga/face_classification/blob/master/report.pdf)
+For more information please consult the [publication](https://github.com/oarriaga/face_classification/blob/master/report.pdf).
 
-# Emotion/gender examples:
-
+### Examples of emotion and gender classification
 ![alt tag](images/demo_results.png)
 
-Guided back-prop
+### Guided backpropagation
 ![alt tag](images/gradcam_results.png)
 
-Real-time demo:
+### Realtime demo
 <div align='center'>
   <img src='images/color_demo.gif' width='400px'>
 </div>
@@ -22,36 +21,44 @@ Real-time demo:
 
 ## Instructions
 
-### Run real-time emotion demo:
-> python3 video_emotion_color_demo.py
+### Run the realtime emotion demo
+```
+python3 video_emotion_color_demo.py
+```
 
-### Run real-time guided back-prop demo:
-> python3 image_gradcam_demo.py
+### Run the realtime guided backpropagation demo
+```
+python3 image_gradcam_demo.py
+```
 
-### Make inference on single images:
-> python3 image_emotion_gender_demo.py <image_path>
+### Run inference on individual images
+```
+python3 image_emotion_gender_demo.py <image_path>
+```
 
-e.g.
-
-> python3 image_emotion_gender_demo.py ../images/test_image.jpg
+For example:
+```
+python3 image_emotion_gender_demo.py ../images/test_image.jpg
+```
 
 ### Running with Docker
 
 With a few steps one can get its own face classification and detection running. Follow the commands below:
 
-* ```docker pull ekholabs/face-classifier```
-* ```docker run -d -p 8084:8084 --name=face-classifier ekholabs/face-classifier```
-* ```curl -v -F image=@[path_to_image]  http://localhost:8084/classifyImage > image.png```
+```
+docker pull ekholabs/face-classifier
+docker run -d -p 8084:8084 --name=face-classifier ekholabs/face-classifier
+curl -v -F image=@[path_to_image]  http://localhost:8084/classifyImage > image.png
+```
 
 ### To train previous/new models for emotion classification:
 
+* Download the dataset from [this Kaggle competition](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data).
 
-* Download the fer2013.tar.gz file from [here](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)
-
-* Move the downloaded file to the datasets directory inside this repository.
+* Move the downloaded file to the folder face_classfication/datasets.
 
 * Untar the file:
-> tar -xzf fer2013.tar
+> tar -xzf fer2013.tar.gz
 
 * Run the train_emotion_classification.py file
 > python3 train_emotion_classifier.py
@@ -67,4 +74,3 @@ With a few steps one can get its own face classification and detection running. 
 
 * Run the train_gender_classification.py file
 > python3 train_gender_classifier.py
-
