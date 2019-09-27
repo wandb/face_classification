@@ -39,7 +39,8 @@ parameters = {
     "base_path": base_path
 }
 
-wandb.init(config=parameters)
+wandb.init()
+wandb.config.update(parameters)
 
 # data generator
 data_generator = ImageDataGenerator(
@@ -80,7 +81,7 @@ for dataset_name in datasets:
     model_names = trained_models_path + '.{epoch:02d}.hdf5'
     model_checkpoint = ModelCheckpoint(model_names, 'val_loss', verbose=1,
                                                     save_best_only=True)
-    callbacks = [model_checkpoint, csv_logger, early_stop, reduce_lr, WandbCallback(), LambdaCallback(on_batch_end = on_batch_end)]
+    callbacks = [model_checkpoint, csv_logger, early_stop, reduce_lr, WandbCallback(data_type="image"), LambdaCallback(on_batch_end = on_batch_end)]
 
     # loading dataset
     data_loader = DataManager(dataset_name, image_size=input_shape[:2])
